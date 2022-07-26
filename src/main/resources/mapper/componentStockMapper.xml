@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sudo.portfolio.datasource.ComponentStockMapper">
+    <select id="selectComponentStock" resultType="com.sudo.portfolio.model.data.ComponentStock">
+        select * from snp500 where symbol = #{symbol} and state = 'OK' order by lastUpdateTime desc limit 1
+    </select>
+
+    <select id="selectComponentStocks" resultType="com.sudo.portfolio.model.data.ComponentStock">
+        select createTime, max(lastUpdateTime), state, symbol, security, GICSSector, GICSSubIndustry from snp500 where state = 'OK' group by symbol
+    </select>
+
+    <update id="updateComponentStock">
+        update snp500 set
+            security = #{security},
+            GICSSector = #{GICSSector},
+            GICSSubIndustry = #{GICSSubIndustry}
+        where symbol = #{symbol} and state = 'OK' order by lastUpdateTime desc limit 1
+    </update>
+
+    <update id="updateDataState">
+        update snp500 set state = #{state} where symbol = #{symbol} and state = 'OK'
+    </update>
+
+    <insert id="insertComponentStock">
+        insert into snp500 (createTime, lastUpdateTime, state, symbol, security, GICSSector, GICSSubIndustry)
+        values (DEFAULT, DEFAULT, 'OK', #{symbol}, #{security}, #{GICSSector}, #{GICSSubIndustry})
+    </insert>
+
+    <insert id="insertComponentStocks" parameterType="java.util.List">
+        insert into snp500 (createTime, lastUpdateTime, state, symbol, security, GICSSector, GICSSubIndustry) values
+        <foreach collection="list" item="item" separator=",">
+            (DEFAULT, DEFAULT, 'OK', #{item.symbol}, #{item.security}, #{item.GICSSector}, #{item.GICSSubIndustry})
+        </foreach>
+    </insert>
+
+    <update id="deleteComponentStock">
+        update snp500 set state = 'DELETED' where symbol = #{symbol} and state = 'OK' order by lastTimeUpdated desc limit 1
+    </update>
+</mapper>

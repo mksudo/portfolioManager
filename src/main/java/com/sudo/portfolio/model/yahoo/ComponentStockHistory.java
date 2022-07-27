@@ -40,29 +40,29 @@ public class ComponentStockHistory {
      * low low price of component stock at that time
      */
     @Column
-    private double low;
+    private Double low;
 
     /**
      * high high price of component stock at that time
      */
     @Column
-    private double high;
+    private Double high;
 
     /**
      * open open price of component stock at that time
      */
     @Column
-    private double open;
+    private Double open;
 
     /**
      * close close price of component stock at that time
      */
     @Column
-    private double close;
+    private Double close;
 
     /**
      * volume volume of component stock that day
      */
     @Column
-    private int volume;
+    private Long volume;
 }

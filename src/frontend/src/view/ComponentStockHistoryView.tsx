@@ -4,9 +4,18 @@ import {ComponentStockHistoryPresenter} from "./components/ComponentStockHistory
 
 type IComponentStockHistoryViewState = {
     currSymbol: string
-    currFrom: Date
-    currTo: Date
+    currFrom: string
+    currTo: string
     histories: IComponentStockHistoryProp[]
+}
+
+function parseDateToString(date: Date) {
+    return new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, -1)
+}
+
+function parseStringToDate(localDateString: string) {
+    const fakeTime = new Date(localDateString)
+    return new Date(fakeTime.getTime() - fakeTime.getTimezoneOffset() * 60000)
 }
 
 export class ComponentStockHistoryView extends React.Component<{}, IComponentStockHistoryViewState> {
@@ -14,10 +23,12 @@ export class ComponentStockHistoryView extends React.Component<{}, IComponentSto
     constructor(props: {}) {
         super(props);
 
+        const initialTime = parseDateToString(new Date())
+
         this.state = {
             currSymbol: "",
-            currFrom: new Date(),
-            currTo: new Date(),
+            currFrom: initialTime,
+            currTo: initialTime,
             histories: []
         }
 
@@ -28,9 +39,13 @@ export class ComponentStockHistoryView extends React.Component<{}, IComponentSto
             this.handleGetComponentStockHistoriesButtonClicked.bind(this)
     }
 
-    getComponentStockHistories(symbol: string, from: Date, to: Date) {
+    getComponentStockHistories(symbol: string, from: string, to: string) {
         fetch(
-            `https://localhost:8080/histories?symbol=${symbol}&from=${from.toUTCString()}&to=${to.toUTCString()}`
+            `http://localhost:8080/history/find?symbol=${symbol}&from=${from}&to=${to}`,
+            {
+                method: "GET",
+                mode: "cors"
+            }
         ).then(
             response => response.json()
         ).then(
@@ -45,8 +60,8 @@ export class ComponentStockHistoryView extends React.Component<{}, IComponentSto
     handleGetComponentStockHistoriesButtonClicked(event: React.FormEvent<HTMLButtonElement>) {
         this.getComponentStockHistories(
             this.state.currSymbol,
-            this.state.currFrom,
-            this.state.currTo
+            this.state.currFrom + "Z",
+            this.state.currTo + "Z"
         )
     }
 
@@ -57,15 +72,14 @@ export class ComponentStockHistoryView extends React.Component<{}, IComponentSto
     }
 
     handleFromDateChange(event: React.FormEvent<HTMLInputElement>) {
-        const nextFromDate = new Date(event.currentTarget.value);
+        const nextFromDate = parseStringToDate(event.currentTarget.value).toISOString().slice(0, -1)
         this.setState({
             currFrom: nextFromDate
         })
     }
 
     handleToDateChange(event: React.FormEvent<HTMLInputElement>) {
-        const nextToDate = new Date();
-        nextToDate.setTime(Date.parse(event.currentTarget.value))
+        const nextToDate = parseStringToDate(event.currentTarget.value).toISOString().slice(0, -1)
         this.setState({
             currTo: nextToDate
         })
@@ -74,19 +88,19 @@ export class ComponentStockHistoryView extends React.Component<{}, IComponentSto
     render() {
         return (
             <div>
-                <div>
+                <div className={"component-history-input-wrapper"}>
                     <span>Please input symbol: </span>
                     <input type={"text"} value={this.state.currSymbol} onChange={this.handleSymbolChange}/>
                 </div>
-                <div>
+                <div className={"component-history-input-wrapper"}>
                     <span>Please input from date: </span>
-                    <input type={"datetime-local"} value={this.state.currFrom.toTimeString()} onChange={this.handleFromDateChange}/>
+                    <input type={"datetime-local"} value={this.state.currFrom} onChange={this.handleFromDateChange}/>
                 </div>
-                <div>
+                <div className={"component-history-input-wrapper"}>
                     <span>Please input to date: </span>
-                    <input type={"datetime-local"} value={this.state.currTo.toTimeString()} onChange={this.handleToDateChange}/>
+                    <input type={"datetime-local"} value={this.state.currTo} onChange={this.handleToDateChange}/>
                 </div>
-                <div>
+                <div className={"component-history-button-wrapper"}>
                     <button onClick={this.handleGetComponentStockHistoriesButtonClicked}>Get {this.state.currSymbol} component stock histories</button>
                 </div>
                 <ComponentStockHistoryPresenter histories={this.state.histories}/>

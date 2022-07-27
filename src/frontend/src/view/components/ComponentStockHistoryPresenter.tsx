@@ -31,6 +31,7 @@ export class ComponentStockHistoryPresenter
                 {
                     this.props.histories.map(
                         history => <ComponentStockHistory
+                            key={history.time}
                             time={history.time}
                             symbol={history.symbol}
                             low={history.low}

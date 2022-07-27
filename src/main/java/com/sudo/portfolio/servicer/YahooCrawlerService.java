@@ -33,7 +33,7 @@ import java.util.concurrent.Executors;
 @Service
 public class YahooCrawlerService {
 
-    private static final String baseUrl = "https://query1.finance.yahoo.com/v8/finance/chart/";
+    private static final String baseUrl = "https://query2.finance.yahoo.com/v8/finance/chart/";
 
     /**
      * Deserializes json content returned by the yahoo finance api
@@ -102,10 +102,10 @@ public class YahooCrawlerService {
                     .getAsDouble();
 
             JsonElement volumeElement = volumeArray.get(timestampIndex);
-            int volume = volumeElement.isJsonNull() ?
+            long volume = volumeElement.isJsonNull() ?
                     -1 : volumeElement
                     .getAsJsonPrimitive()
-                    .getAsInt();
+                    .getAsLong();
 
             stockQuoteHistories.add(
                     ComponentStockHistory.builder()
@@ -141,7 +141,7 @@ public class YahooCrawlerService {
                 symbol,
                 String.format(
                         baseUrl + "%s?period1=%d&period2=%d&interval=%s",
-                        symbol,
+                        symbol.indexOf('.') == -1 ? symbol : symbol.replaceAll("\\.", "-"),
                         from.getEpochSecond(),
                         to.getEpochSecond(),
                         interval.getInterval()
@@ -164,7 +164,7 @@ public class YahooCrawlerService {
         return new AbstractMap.SimpleEntry<>(
                 symbol,
                 String.format(baseUrl + "%s?range=%s&interval=%s",
-                        symbol,
+                        symbol.indexOf('.') == -1 ? symbol : symbol.replaceAll("\\.", "-"),
                         range.getRange(),
                         interval.getInterval()
                 )
@@ -233,11 +233,17 @@ public class YahooCrawlerService {
                                     .BodyHandlers
                                     .ofString()
                     ).thenApply(
-                            stringHttpResponse -> deserializeStockQuoteHistory(
-                                    gson,
-                                    stringHttpResponse.body(),
-                                    pair.getKey()
-                            )
+                            stringHttpResponse -> {
+                                try {
+                                    return deserializeStockQuoteHistory(
+                                            gson,
+                                            stringHttpResponse.body(),
+                                            pair.getKey()
+                                    );
+                                } catch (Exception e) {
+                                    throw new RuntimeException("error on symbol " + pair.getKey() + " and url " + pair.getValue());
+                                }
+                            }
                     );
         } catch (URISyntaxException exception) {
             throw new RuntimeException(exception.getMessage());

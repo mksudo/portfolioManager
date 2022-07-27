@@ -7,12 +7,16 @@ import com.sudo.portfolio.servicer.ComponentStockService;
 import com.sudo.portfolio.servicer.YahooCrawlerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@CrossOrigin
+@RestController
 public class ComponentStockController {
 
     final private YahooCrawlerService yahooFinanceCrawlerService;
@@ -34,33 +38,33 @@ public class ComponentStockController {
         this.componentStockHistoryService = componentStockHistoryService;
     }
 
-    @RequestMapping("/find")
+    @RequestMapping("/stock/find")
     public ComponentStock findComponentStock(
             @RequestParam(value = "symbol") String symbol
     ) {
         return this.componentStockService.selectComponentStock(symbol);
     }
 
-    @RequestMapping("/find/all")
+    @RequestMapping("/stock/find/all")
     public List<ComponentStock> findAllComponentStocks() {
         return this.componentStockService.selectComponentStocks();
     }
 
-    @RequestMapping("/add")
+    @RequestMapping("/stock/add")
     public void addComponentStock(
             @RequestBody @Validated ComponentStock componentStock
     ) {
         this.componentStockService.insertComponentStock(componentStock);
     }
 
-    @RequestMapping("/delete")
+    @RequestMapping("/stock/delete")
     public void deleteComponentStock(
             @RequestParam(value = "symbol") String symbol
     ) {
         this.componentStockService.deleteComponentStock(symbol);
     }
 
-    @RequestMapping("/update")
+    @RequestMapping("/stock/update")
     public void updateComponentStock(
             @RequestBody @Validated ComponentStock componentStock
     ) {

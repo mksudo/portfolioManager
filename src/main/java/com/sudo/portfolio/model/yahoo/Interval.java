@@ -1,6 +1,8 @@
 package com.sudo.portfolio.model.yahoo;
 
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 /**
  * This enum represents the interval param
  * in yahoo finance api requests
@@ -67,5 +69,12 @@ public enum Interval {
 
     public String getInterval() {
         return this.interval;
+    }
+
+    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
+    public static Interval fromText(String text) {
+        for (Interval value : Interval.values())
+            if (value.getInterval().equals(text)) return value;
+        throw new IllegalArgumentException();
     }
 }

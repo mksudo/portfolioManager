@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sudo.portfolio.datasource.ComponentStockMapper">
+    <cache type="com.sudo.portfolio.datasource.RedisCache"/>
     <select id="selectComponentStock" resultType="com.sudo.portfolio.model.data.ComponentStock">
         select * from snp500 where symbol = #{symbol} and state = 'OK' order by lastUpdateTime desc limit 1
     </select>
 
     <select id="selectComponentStocks" resultType="com.sudo.portfolio.model.data.ComponentStock">
-        select createTime, max(lastUpdateTime), state, symbol, security, GICSSector, GICSSubIndustry from snp500 where state = 'OK' group by symbol
+        select createTime, max(lastUpdateTime) as lastUpdateTime, state, symbol, security, GICSSector, GICSSubIndustry from snp500 where state = 'OK' group by symbol
     </select>
 
     <update id="updateComponentStock">

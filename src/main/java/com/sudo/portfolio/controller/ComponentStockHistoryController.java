@@ -5,9 +5,9 @@ import com.sudo.portfolio.model.postBody.ComponentStockHistoryRequest;
 import com.sudo.portfolio.model.yahoo.ComponentStockHistory;
 import com.sudo.portfolio.model.yahoo.Interval;
 import com.sudo.portfolio.model.yahoo.Range;
-import com.sudo.portfolio.servicer.ComponentStockCrawlerService;
-import com.sudo.portfolio.servicer.ComponentStockHistoryService;
-import com.sudo.portfolio.servicer.YahooCrawlerService;
+import com.sudo.portfolio.service.ComponentStockCrawlerService;
+import com.sudo.portfolio.service.ComponentStockHistoryService;
+import com.sudo.portfolio.service.YahooCrawlerService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -96,6 +97,14 @@ public class ComponentStockHistoryController {
                                 .stream()
                                 .map(ComponentStock::getSymbol)
                                 .toList(),
+                        from,
+                        to,
+                        Interval.fromText(interval)
+                )
+        );
+        this.componentStockHistoryService.addComponentStockHistories(
+                this.yahooCrawlerService.getStockHistories(
+                        Collections.singletonList("SPY"),
                         from,
                         to,
                         Interval.fromText(interval)

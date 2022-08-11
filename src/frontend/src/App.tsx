@@ -1,12 +1,12 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import {ComponentStockHistoryView} from "./view/ComponentStockHistoryView";
+import {PortfolioManager} from "./view/PortfolioManager";
 
 function App() {
   return (
     <div className="App">
-      <ComponentStockHistoryView/>
+      <PortfolioManager></PortfolioManager>
     </div>
   );
 }

@@ -1,8 +1,10 @@
-package com.sudo.portfolio.model;
+package com.sudo.portfolio.model.portfolio;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
@@ -14,11 +16,13 @@ import java.util.Map;
  */
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Portfolio {
     /**
      * id id of portfolio
      */
-    private @NotNull String id;
+    private String id;
 
     /**
      * from the time to start simulating investment

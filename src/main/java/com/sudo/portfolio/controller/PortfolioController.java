@@ -1,44 +1,47 @@
 package com.sudo.portfolio.controller;
 
-import com.sudo.portfolio.model.Portfolio;
-import com.sudo.portfolio.servicer.PortfolioCalculatorService;
+import com.sudo.portfolio.model.portfolio.Portfolio;
+import com.sudo.portfolio.model.portfolio.PortfolioAnalyzeResult;
+import com.sudo.portfolio.service.PortfolioAnalyzeService;
+import com.sudo.portfolio.service.PortfolioCalculatorService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.time.Instant;
 
 @CrossOrigin
 @RestController
 public class PortfolioController {
 
     private final PortfolioCalculatorService portfolioCalculatorService;
+    private final PortfolioAnalyzeService portfolioAnalyzeService;
 
     @Autowired
     public PortfolioController(
-            PortfolioCalculatorService portfolioCalculatorService
+            PortfolioCalculatorService portfolioCalculatorService,
+            PortfolioAnalyzeService portfolioAnalyzeService
     ) {
         this.portfolioCalculatorService = portfolioCalculatorService;
+        this.portfolioAnalyzeService = portfolioAnalyzeService;
     }
 
     @RequestMapping("/portfolio")
     public boolean checkPortfolio(
-            @RequestParam("from")
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-            Instant from,
-            @RequestParam("to")
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-            Instant to,
             @RequestBody Portfolio portfolio
     ) {
         return this.portfolioCalculatorService.isPortfolioBetterThanSPY(
                 portfolio,
-                from,
-                to
+                portfolio.getFrom(),
+                portfolio.getTo()
         );
+    }
+
+    @RequestMapping(value = "/portfolio/analyze", method = RequestMethod.POST)
+    public PortfolioAnalyzeResult analyzePortfolio(
+            @RequestBody Portfolio portfolio
+    ) {
+        return this.portfolioAnalyzeService.analyzePortfolio(portfolio);
     }
 }

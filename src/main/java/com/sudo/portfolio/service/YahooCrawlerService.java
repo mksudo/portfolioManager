@@ -1,4 +1,4 @@
-package com.sudo.portfolio.servicer;
+package com.sudo.portfolio.service;
 
 
 import com.google.gson.Gson;

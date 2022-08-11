@@ -1,8 +1,9 @@
-package com.sudo.portfolio.servicer;
+package com.sudo.portfolio.service;
 
 import com.sudo.portfolio.datasource.ComponentStockMapper;
 import com.sudo.portfolio.model.data.ComponentStock;
 import com.sudo.portfolio.model.data.State;
+import com.sudo.portfolio.service.abstraction.IComponentStockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,12 +15,14 @@ import java.util.List;
  * This class handles communications with MySQL
  */
 @Service
-public class ComponentStockService {
+public class ComponentStockService implements IComponentStockService {
 
     private final ComponentStockMapper componentStockMapper;
 
     @Autowired
-    public ComponentStockService(ComponentStockMapper componentStockMapper) {
+    public ComponentStockService(
+            ComponentStockMapper componentStockMapper
+    ) {
         this.componentStockMapper = componentStockMapper;
     }
 
@@ -56,6 +59,7 @@ public class ComponentStockService {
      */
     public int insertComponentStock(@NotNull ComponentStock componentStock) {
         this.componentStockMapper.updateDataState(componentStock.getSymbol(), State.OUTDATED);
+
         return this.componentStockMapper.insertComponentStock(componentStock);
     }
 

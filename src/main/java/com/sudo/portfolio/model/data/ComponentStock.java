@@ -2,9 +2,14 @@ package com.sudo.portfolio.model.data;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.time.Instant;
 
 
@@ -14,7 +19,9 @@ import java.time.Instant;
  */
 @Data
 @Builder
-public class ComponentStock {
+@NoArgsConstructor
+@AllArgsConstructor
+public class ComponentStock implements Serializable {
     /**
      * createTime the time when the component stock
      * data is first inserted into MySQL database

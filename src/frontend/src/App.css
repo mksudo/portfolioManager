@@ -1,3 +1,5 @@
+@import '~antd/dist/antd.css';
+
 html, body {
   width: 100%;
   height: 100%;
@@ -43,55 +45,4 @@ html, body {
   to {
     transform: rotate(360deg);
   }
-}
-
-.cell {
-  display: inline-block;
-  border: solid 1px black;
-
-  width: calc(90% / 7);
-  margin-right: 10px;
-}
-
-.cell:last-child {
-  margin-right: 0;
-}
-
-.cell-content-wrapper {
-
-}
-
-.history-column {
-
-}
-
-.history-table-header {
-  font-size: 2em;
-}
-
-.history-table {
-  list-style: none;
-  padding: 0;
-
-  min-width: 800px;
-}
-
-.component-history-input-wrapper {
-  display: inline-block;
-
-  margin-right: 10px;
-}
-
-.component-history-input-wrapper:last-child {
-  margin-right: 0;
-}
-
-.component-history-button-wrapper {
-  margin-top: 20px;
-  margin-bottom: 20px;
-  height: 50px;
-}
-
-button {
-  height: 50px;
 }

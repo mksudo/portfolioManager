@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sudo.portfolio.datasource.PortfolioMapper">
+    <cache type="com.sudo.portfolio.datasource.RedisCache"/>
+
+    <resultMap id="portfolioMap" type="Portfolio">
+        <id property="id" column="id"/>
+        <result property="from" column="timeFrom"/>
+        <result property="to" column="timeTo"/>
+        <collection property="investment" javaType="java.util.Map">
+
+        </collection>
+    </resultMap>
+
+    <insert id="insertPortfolio">
+        INSERT INTO portfolio (id, timeFrom, timeTo) values (#{id}, #{from}, #{to})
+    </insert>
+
+    <insert id="insertPortfolioInvestment">
+        INSERT INTO investment (id, symbol, allocation) values (#{id}, #{symbol}, #{allocation})
+    </insert>
+
+    <insert id="insertPortfolioInvestments">
+        INSERT INTO investment (id, symbol, allocation) values
+        <foreach item="item" collection="investments.entrySet()">
+            (#{id}, #{item.key}, #{item.value})
+        </foreach>
+    </insert>
+
+    <select id="selectInvestments">
+        SELECT * FROM investment (id, symbol, allocation) where id = #{id}
+    </select>
+
+    <select id="selectPortfolio">
+        SELECT id, timeFrom as "from", timeTo as "to" FROM portfolio where id = #{id}
+    </select>
+</mapper>

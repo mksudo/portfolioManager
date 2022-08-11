@@ -1,10 +1,10 @@
 package com.sudo.portfolio.controller;
 
 import com.sudo.portfolio.model.data.ComponentStock;
-import com.sudo.portfolio.servicer.ComponentStockCrawlerService;
-import com.sudo.portfolio.servicer.ComponentStockHistoryService;
-import com.sudo.portfolio.servicer.ComponentStockService;
-import com.sudo.portfolio.servicer.YahooCrawlerService;
+import com.sudo.portfolio.service.ComponentStockCrawlerService;
+import com.sudo.portfolio.service.ComponentStockHistoryService;
+import com.sudo.portfolio.service.ComponentStockService;
+import com.sudo.portfolio.service.YahooCrawlerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.util.List;
 
 @CrossOrigin
@@ -69,5 +70,12 @@ public class ComponentStockController {
             @RequestBody @Validated ComponentStock componentStock
     ) {
         this.componentStockService.updateComponentStock(componentStock);
+    }
+
+    @RequestMapping("/stock/crawl")
+    public void crawlComponentStock() throws IOException {
+        this.componentStockService.insertComponentStocks(
+                this.componentStockCrawlerService.crawlComponentStocks()
+        );
     }
 }
